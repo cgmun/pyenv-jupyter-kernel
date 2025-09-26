@@ -17,16 +17,25 @@ if [[ -z "$name" ]]; then
     name=$(pyenv version-name | cut -d':' -f1)
 fi
 
+if [[ -z "$JUPYTER_DATA_DIR" ]]; then
+    echo "Jupyter not found. Please install jupyter in one of your pyenv versions." >&2
+    jupyter_root=$(pyenv whence jupyter|tail -1)
+    jupyter=${PYENV_ROOT}/versions/${jupyter_root}/bin/jupyter
+else
+    echo "Using Jupyter data directory: $JUPYTER_DATA_DIR"
+fi
+
 python=$(PYENV_VERSION=$name pyenv which python)
 
-jupyter_dir=$(jupyter --data-dir)
-kernel_dir=${jupyter_dir}/kernels/pyenv_${name}
+jupyter_dir=$($jupyter --data-dir)
+kernel_dir=${JUPYTER_DATA_DIR}/kernels/pyenv_${name}
 
 echo "Installing jupyter kernel file $name for $python to $kernel_dir ..."
 
 echo "Upgrading (or installing) the ipykernel package for $name ..."
 PYENV_VERSION=$name pyenv exec pip install -U ipykernel
 PYENV_VERSION=$name pyenv exec pip install -U --no-deps ipywidgets
+PYENV_VERSION=$name pyenv exec pip install -U dotenv
 
 mkdir -p $kernel_dir
 
@@ -41,3 +50,7 @@ cat > $kernel_file <<EOF
 EOF
 
 echo "Kernel file created."
+
+# Copy the kernel logo as recent versions of JupyterLab require it
+cp $(dirname "$0")/*.png $kernel_dir
+echo "Copied kernel logos."
