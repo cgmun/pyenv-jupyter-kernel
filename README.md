@@ -8,17 +8,35 @@ Pyenv plugin to create a jupyter kernel for every installed pyenv version. Inspi
 $ git clone https://github.com/cgmun/pyenv-jupyter-kernel $(pyenv root)/plugins/pyenv-jupyter-kernel
 ```
 ## bashrc
-# Load pyenv-jupyter-kernel automatically by adding
-# the following to ~/.bashrc:
+## Load pyenv-jupyter-kernel automatically by adding the following to ~/.bashrc:
 
-# PYENV_JUPYTER is where pyenv virtual environment jupyterlab is installed
+### PYENV_JUPYTER is which pyenv virtual environment jupyterlab is installed.
+~~~
 export PYENV_JUPYTER="jupyterlab"
 
 export JUPYTER_DATA_DIR=$(PYENV_VERSION=$PYENV_JUPYTER jupyter --data-dir)
 export JUPYTER_RUNTIME_DIR=$(PYENV_VERSION=$PYENV_JUPYTER jupyter --runtime-dir)
 export JUPYTER_CONFIG_DIR=$(PYENV_VERSION=$PYENV_JUPYTER jupyter --config-dir)
-note: JUPYTER_DATA_DIR is variable that pyenv-jupyter-kernel looks for before guessing.
+~~~
+Note: JUPYTER_DATA_DIR is variable that pyenv-jupyter-kernel looks for before guessing.
 
+
+## WSL
+ setup a wsl profile
+ 
+ command line : wsl --shell-type login --cd ~ -e bash -l "jlab"
+ 
+ jlab script:
+ ~~~
+#!/usr/bin/env bash
+
+source ~/.bashrc
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+jupyter-lab
+~~~
+ 
 ## Usage
 
 New kernels are automatically installed for every new version and virtualenv that you install. However, if you want to install the kernel for the current version (if using multiple versions, the top one) you can run:
