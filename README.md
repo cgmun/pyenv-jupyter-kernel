@@ -5,8 +5,19 @@ Pyenv plugin to create a jupyter kernel for every installed pyenv version. Inspi
 ## Installation
 
 ```shell
-$ git clone https://github.com/aiguofer/pyenv-jupyter-kernel $(pyenv root)/plugins/pyenv-jupyter-kernel
+$ git clone https://github.com/cgmun/pyenv-jupyter-kernel $(pyenv root)/plugins/pyenv-jupyter-kernel
 ```
+## bashrc
+# Load pyenv-jupyter-kernel automatically by adding
+# the following to ~/.bashrc:
+
+# PYENV_JUPYTER is where pyenv virtual environment jupyterlab is installed
+export PYENV_JUPYTER="jupyterlab"
+
+export JUPYTER_DATA_DIR=$(PYENV_VERSION=$PYENV_JUPYTER jupyter --data-dir)
+export JUPYTER_RUNTIME_DIR=$(PYENV_VERSION=$PYENV_JUPYTER jupyter --runtime-dir)
+export JUPYTER_CONFIG_DIR=$(PYENV_VERSION=$PYENV_JUPYTER jupyter --config-dir)
+note: JUPYTER_DATA_DIR is variable that pyenv-jupyter-kernel looks for before guessing.
 
 ## Usage
 
